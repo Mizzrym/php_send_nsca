@@ -29,8 +29,9 @@ class SendNsca
     public function send($host, $service, $returncode, $message)
     {
         $connection = stream_socket_client($this->hostname . ':' . $this->port, $errno, $errstr, 30);
-        if (!$connection)
+        if (!$connection) {
             throw new NscaException('Could not connect to NSCA Server on ' . $this->hostname);
+        }
         stream_set_timeout($connection, 10);
 
         $iv = stream_get_contents($connection, 128); //initialisation vector for encryption
@@ -44,9 +45,9 @@ class SendNsca
         $crc = crc32($packet);
         $packet = pack('nxxNNna64a128a512xx', 3, $crc, $timestamp, $returncode, $host, $service, $message);
 
-        if ($this->encryption !== null)
+        if ($this->encryption !== null) {
             $packet = $this->encrypt($packet, $iv);
-
+        }
         fflush($connection);
         fwrite($connection, $packet);
         fclose($connection);
@@ -54,21 +55,23 @@ class SendNsca
 
     protected function encrypt($packet, $iv)
     {
-        if ($this->password === null)
+        if ($this->password === null) {
             throw new NscaException('Can\'t encrypt package without password!');
-
+        }
         $iv = substr($iv, 0, 8);
         $crypt = mcrypt_encrypt($this->encryption, $this->password, $packet, 'cfb', $iv);
-        if ($crypt === false)
+        if ($crypt === false) {
             throw new NscaException('Encryption failed');
+        }
         return $crypt;
     }
 
     protected function fillBufferWithRandomData(&$buffer, $maxBufferSize)
     {
         $buffer .= "\0";
-        while (strlen($buffer) < $maxBufferSize)
+        while (strlen($buffer) < $maxBufferSize) {
             $buffer .= chr(mt_rand(0, 255));
+        }
         return $buffer;
     }
 

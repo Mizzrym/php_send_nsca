@@ -72,7 +72,6 @@ class SendNsca
         while (strlen($buffer) < $maxBufferSize) {
             $buffer .= chr(mt_rand(0, 255));
         }
-        return $buffer;
     }
 
 }

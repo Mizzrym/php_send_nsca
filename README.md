@@ -19,7 +19,7 @@ errorhandling
 -------------
 If you don't want the class to throw Exceptions, override the send function to something like this: 
 
-	public function send($host, $service, $returncode, $message)
+	public static function send($host, $service, $returncode, $message = '')
 	{
 		try {
 			parent::send($host, $service, $returncode, $message);
@@ -29,4 +29,4 @@ If you don't want the class to throw Exceptions, override the send function to s
 		} 
 	}
 
-Be aware that wrong encryption typenames can also lead to critical failures that will stop your programs execution.
+Be aware that wrong encryption typenames can also lead to critical failures that will stop your programs execution at runtime.

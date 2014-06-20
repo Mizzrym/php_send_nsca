@@ -1,10 +1,9 @@
 <?php
 class MyNscaClassExample extends SendNsca
 {
-
-    public function __construct()
-    {
-        parent::__construct('localhost', '5667', 'tripledes', 'iwantedtousepenisasapasswordbutitsaiditwastooshort');
-    }
+	protected static $hostname = 'monitoringserver';
+	protected static $port = '5667';
+	protected static $encryption = MCRYPT_3DES;
+	protected static $password = 'iwantedtousepenisasapasswordbutiitsaiditwastooshort';
 
 }

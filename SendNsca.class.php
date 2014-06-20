@@ -52,6 +52,13 @@ abstract class SendNsca
      */
     protected static $mcryptMode = 'cfb';
 
+    /**
+     * The length of the initilisation vector *could* be different depending on your encryption type
+     *
+     * @var int
+     */
+     protected static $ivlen = 8;
+
     /*
      * Nagios status codes
      */
@@ -68,6 +75,7 @@ abstract class SendNsca
      * the service).
      * Use the SendNsca class constants to set the appropriate returncode.
      * Sending a message is optional.
+     * Both hostname and service are case sensitive.
      *
      * @static
      * @param string $host
@@ -142,12 +150,12 @@ abstract class SendNsca
      * @return string
      * @throws NscaException
      */
-    final private function encrypt($packet, $iv)
+    final private static function encrypt($packet, $iv)
     {
         if (static::$password === null) {
             throw new NscaException('Can\'t encrypt package without password!');
         }
-        $iv = substr($iv, 0, 8);
+        $iv = substr($iv, 0, static::$ivlen);
         $crypt = mcrypt_encrypt(static::$encryption, static::$password, $packet, static::$mcryptMode, $iv);
         if ($crypt === false) {
             throw new NscaException('Encryption failed');

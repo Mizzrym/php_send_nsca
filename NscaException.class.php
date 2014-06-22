@@ -1,2 +1,4 @@
 <?php
-class NscaException extends Exception {}
+namespace php_send_nsca;
+
+class NscaException extends \Exception {}

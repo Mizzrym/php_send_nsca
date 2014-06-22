@@ -1,10 +1,13 @@
 <?php
+
+namespace  php_send_nsca;
+
 /**
  * Abstract class to send nsca notifications. Should be extended once for every monitoring server in your
  * network. The extended class needs to overwrite at least $hostname, otherwise function send won't
  * execute and fail with a NscaException.
  * Needs at least PHP 5.3 to work with late static binding. If your PHP version is too old and you cant
- * upgrade, replace all static calls to variables with a get-function (self::getHostname()) and
+ * upgrade, replace all static calls to variables with a get-function (like self::getHostname()) and
  * overwrite them in the extending class.
  *
  * @abstract
@@ -45,19 +48,28 @@ abstract class SendNsca
     protected static $password = null;
 
     /**
-     * The encryption mode to be used by mcrypt.
-     *
-     * @var string
-     * @link http://php.net/manual/en/mcrypt.constants.php
-     */
-    protected static $mcryptMode = 'cfb';
-
-    /**
-     * The length of the initilisation vector *could* be different depending on your encryption type
+     * The timeout used by stream_socket_client to initiate connection with nsca. 
+     * Note that php will call some getaddress whatever function in case you're using a DNS name 
+     * instead of an ip address which ignores this timeout. 
+     * Of course it does, because obviously DNS doesn't suck enough as it is. 
+     * (default 15 seconds)
      *
      * @var int
      */
-     protected static $ivlen = 8;
+    protected static $timeout_connect = 15;
+
+    /**
+     * The maximum runtime in seconds after the connection with nsca is initiated
+     * (default 10 seconds)
+     *
+     * @var int
+     */
+    protected static $timeout_stream = 10;
+
+    /**
+     * The encryption mode used by mcrypt
+     */
+    const ENCRYPTION_MODE = 'cfb';
 
     /*
      * Nagios status codes
@@ -111,11 +123,15 @@ abstract class SendNsca
 
         // try to connect to host
         $errno = $errstr = null;
-        $connection = stream_socket_client(static::$hostname . ':' . static::$port, $errno, $errstr, 30);
+        // i hate myself for using '@' to suppress the warning, but spam in logfiles had to be prevented somehow
+        $connection = @stream_socket_client(static::$hostname . ':' . static::$port, $errno, $errstr, static::$timeout_connect);
         if (!$connection) {
-            throw new NscaException('Could not connect to NSCA Server on ' . static::$hostname . ' error: ' . $errno . ' - ' . $errstr);
+            throw new NscaException(
+                'Could not connect to NSCA Server on ' . static::$hostname . 
+                ' error: ' . $errno . ' - ' . $errstr
+            );
         }
-        stream_set_timeout($connection, 10);
+        stream_set_timeout($connection, static::$timeout_stream);
 
         // read initial package
         $iv = stream_get_contents($connection, 128); //initialisation vector for encryption
@@ -152,19 +168,30 @@ abstract class SendNsca
      */
     final private static function encrypt($packet, $iv)
     {
+        // sanity check
         if (static::$password === null) {
             throw new NscaException('Can\'t encrypt package without password!');
         }
-        $iv = substr($iv, 0, static::$ivlen);
-        $crypt = mcrypt_encrypt(static::$encryption, static::$password, $packet, static::$mcryptMode, $iv);
+
+        // assemble initialisation vector
+        $ivlen = mcrypt_get_iv_size(static::$encryption, self::ENCRYPTION_MODE);
+        if ($ivlen === false) {
+            throw new NscaException('Can\'t determine initialisation vector length');
+        }
+        $iv = substr($iv, 0, $ivlen);
+
+        // encrypt
+        $crypt = mcrypt_encrypt(static::$encryption, static::$password, $packet, self::ENCRYPTION_MODE, $iv);
         if ($crypt === false) {
             throw new NscaException('Encryption failed');
         }
+
         return $crypt;
     }
 
     /**
      * Fills buffer with random data (O RLY) for better encryption results.
+     *
      * @param string $buffer
      * @param int $maxBufferSize
      */

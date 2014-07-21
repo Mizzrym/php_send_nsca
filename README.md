@@ -7,7 +7,7 @@ send nsca implementation in PHP for nagios.
 usage
 -----
 
-See example.php and MyNscaClassExample.class.php
+See autoload.php, example.php and MyNscaClassExample.class.php
 
 
 important
@@ -29,4 +29,4 @@ If you don't want the class to throw Exceptions, override the send function to s
 		} 
 	}
 
-Be aware that wrong encryption typenames can also lead to critical failures that will stop your programs execution at runtime.
+Be aware that wrong encryption typenames can also lead to critical failures that will stop your programs execution at runtime (if you don't handle errors on your own)

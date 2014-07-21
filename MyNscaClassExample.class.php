@@ -1,6 +1,9 @@
 <?php
 
-class MyNscaClassExample extends \php_send_nsca\SendNsca
+use php_send_nsca\SendNsca;
+
+
+class MyNscaClassExample extends SendNsca
 {
 	protected static $hostname = '127.0.0.1';
 	protected static $port = '5667';
@@ -16,7 +19,7 @@ class MyNscaClassExample extends \php_send_nsca\SendNsca
     {
         try {
             parent::send($h, $s, $r, $m);
-        } catch(\php_send_nsca\NscaException $e) {
+        } catch(Exception $e) {
             return false;
         }
         return true;

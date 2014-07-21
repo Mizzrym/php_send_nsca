@@ -14,7 +14,7 @@ namespace  php_send_nsca;
  * @author      Mizzrym <og.hartmann@gmail.com>
  * @link        https://github.com/Mizzrym/php_sned_nsca
  */
-abstract class SendNsca
+abstract class SendNsca implements Nagios
 {
     /**
      * The hostname, fqdn or ip address to connect to.
@@ -71,14 +71,9 @@ abstract class SendNsca
      */
     const ENCRYPTION_MODE = 'cfb';
 
-    /*
-     * Nagios status codes
+    /**
+     * Static class
      */
-    const STATE_OK = 0;
-    const STATE_WARNING = 1;
-    const STATE_CRITICAL = 2;
-    const STATE_UNKNOWN = 3;
-
     private function __construct() {}
 
     /**

@@ -2,6 +2,8 @@
 
 namespace  php_send_nsca;
 
+use \ReflectionClass;
+
 /**
  * Abstract class to send nsca notifications. Should be extended once for every monitoring server in your
  * network. The extended class needs to overwrite at least $hostname, otherwise function send won't
@@ -106,13 +108,8 @@ abstract class SendNsca implements Nagios
         if (strlen($message) >= 512) {
             throw new NscaException('Message too long');
         }
-        switch($returncode) {
-            case self::STATE_OK:
-            case self::STATE_WARNING:
-            case self::STATE_CRITICAL:
-            case self::STATE_UNKNOWN:
-                break;
-            default:
+        $Reflection = new ReflectionClass('Nagios');
+        if ($Reflection->hasConstant($returncode) === false) {
                 throw new Exception('Invalid returncode');
         }
 

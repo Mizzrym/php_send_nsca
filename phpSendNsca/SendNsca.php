@@ -2,6 +2,11 @@
 
 namespace phpSendNsca;
 
+/**
+ * Class to send Nagios passive checks to nsca daemon
+ *
+ * @author Mizzrym
+ */
 abstract class SendNsca
 {
     /**

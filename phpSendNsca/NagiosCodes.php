@@ -1,11 +1,11 @@
 <?php
 
-namespace php_send_nsca;
+namespace phpSendNsca;
 
 /**
- * Interface provides nagios status codes
+ * Class provides Nagios Status Codes
  */
-interface Nagios 
+class NagiosCodes
 {
     const STATE_OK = 0;
     const STATE_WARNING = 1;
@@ -15,4 +15,5 @@ interface Nagios
     const HOST_WARNING = 1;
     const HOST_DOWN = 2;
     const HOST_UNKNOWN = 3;
+
 }

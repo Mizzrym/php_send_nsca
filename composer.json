@@ -1,0 +1,16 @@
+{
+    "name": "Mizzrym/php_send_nsca",
+    "description": "NSCA",
+    "license": "GPL-3.0",
+    "authors": [{
+        "name": "Mizzrym",
+        "role": "Developer"
+      }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "files": ["NagiosCodes.php", "SendNsca.php"]
+    }
+}

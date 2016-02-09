@@ -1,5 +1,5 @@
 {
-    "name": "Mizzrym/phpSendNsca",
+    "name": "phpSendNsca",
     "description": "NSCA",
     "license": "GPL-3.0",
     "authors": [{
@@ -11,6 +11,6 @@
         "php": ">=5.3.0"
     },
     "autoload": {
-        "files": ["phpSendNsca/NagiosCodes.php", "phpSendNsca/SendNsca.php"]
+        "files": ["NagiosCodes.php", "SendNsca.php"]
     }
 }

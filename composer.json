@@ -3,8 +3,15 @@
     "description": "NSCA",
     "license": "MIT",
     "version": "0.0.1",
-    "authors": [{
+    "authors": [
+      {
         "name": "Mizzrym",
+        "homepage": "https://github.com/Mizzrym/",
+        "role": "Developer"
+      },
+      {
+        "name": "sebob",
+        "homepage": "https://github.com/sebob",
         "role": "Developer"
       }
     ],

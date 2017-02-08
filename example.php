@@ -13,10 +13,10 @@ require __DIR__ . '/vendor/autoload.php';
  */
 class SendNscaClient extends SendNsca
 {
-	protected $hostname = '10.253.253.40';
+	protected $hostname = '127.0.0.1';
 	protected $port = '5667';
 	protected $encryption = 'xor';
-	protected $password = 'hugo21';
+	protected $password = 'password';
 }
 
 /*

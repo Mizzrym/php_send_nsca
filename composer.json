@@ -20,5 +20,6 @@
     },
     "autoload": {
         "files": ["NagiosCodes.php", "SendNsca.php"]
-    }
+    },
+    "minimum-stability":"stable"
 }

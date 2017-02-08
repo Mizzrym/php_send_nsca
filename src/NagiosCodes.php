@@ -1,11 +1,11 @@
 <?php
 
-namespace phpSendNsca;
+namespace UniTel\PHPSendNSCA;
 
 /**
  * Class provides Nagios Status Codes
  */
-class NagiosCodes
+abstract class NagiosCodes
 {
     const STATE_OK = 0;
     const STATE_WARNING = 1;

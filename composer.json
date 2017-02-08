@@ -1,25 +1,30 @@
 {
-    "name": "php_send_nsca",
-    "description": "NSCA",
-    "license": "MIT",
-    "version": "0.0.1",
-    "authors": [
-      {
-        "name": "Mizzrym",
-        "homepage": "https://github.com/Mizzrym/",
-        "role": "Developer"
-      },
-      {
-        "name": "sebob",
-        "homepage": "https://github.com/sebob",
-        "role": "Developer"
-      }
-    ],
-    "require": {
-        "php": ">=5.3.0"
+  "name": "uni-tel/php_send_nsca",
+  "description": "NSCA",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Mizzrym",
+      "homepage": "https://github.com/Mizzrym/",
+      "role": "Developer"
     },
-    "autoload": {
-        "files": ["NagiosCodes.php", "SendNsca.php"]
+    {
+      "name": "sebob",
+      "homepage": "https://github.com/sebob",
+      "role": "Developer"
     },
-    "minimum-stability":"stable"
+    {
+      "name": "Uni-tel",
+      "homepage": "https://github.com/Uni-tel",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=5.3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "UniTel\\PHPSendNSCA\\": "src"
+    }
+  }
 }

@@ -1,5 +1,5 @@
 {
-    "name": "phpSendNsca",
+    "name": "php_send_nsca",
     "description": "NSCA",
     "license": "MIT",
     "version": "0.0.1",

@@ -38,5 +38,5 @@ define service{
  * The send call itself should not need much explanation.
  */
 
-$Nsca = new SendNscaClient();
-$Nsca->send('example-server', 'example-service', NagiosCodes::STATE_OK, 'potato');
+$nsca = new SendNscaClient();
+$nsca->send('example-server', 'example-service', NagiosCodes::STATE_OK, 'potato');

@@ -74,11 +74,11 @@ abstract class SendNsca
 	 * Sending a message is optional.
 	 * Both hostname and service are case sensitive.
 	 *
-	 * @param string $host Hostname
-	 * @param string $service Name of the service
-	 * @param int $returncode Nagios State-code
-	 * @param string $message (optional) Message
-	 * @return true|false true on success
+	 * @param string $host Hostname.
+	 * @param string $service Name of the service.
+	 * @param integer $returncode Nagios State-code.
+	 * @param string $message Message (optional).
+	 * @return true|false true on success.
 	 */
 	public function send($host, $service, $returncode, $message = '')
 	{
@@ -94,15 +94,18 @@ abstract class SendNsca
 		if (strlen($message) >= 512) {
 			return false;
 		}
-		$Reflection = new \ReflectionClass(NagiosCodes::class);
-		if (!in_array($returncode, $Reflection->getConstants())) {
+		$reflection = new \ReflectionClass(NagiosCodes::class);
+		if (!in_array($returncode, $reflection->getConstants())) {
 			return false;
 		}
 		// try to connect to host
 		$errno = $errstr = null;
 		// i hate myself for using '@' to suppress the warning, but spam in logfiles had to be prevented
 		$connection = @stream_socket_client(
-			$this->hostname . ':' . $this->port, $errno, $errstr, $this->connectTimeout
+			$this->hostname . ':' . $this->port,
+			$errno,
+			$errstr,
+			$this->connectTimeout
 		);
 		if (!$connection) {
 			return false;
@@ -126,9 +129,9 @@ abstract class SendNsca
 
 		// encrypt
 		if ($this->encryption !== null) {
-			if($this->encryption === 'xor'){
-				$packet = $this->simple_xor($packet, $iv);
-			}elseif (false === $packet = $this->encrypt($packet, $iv)) {
+			if ($this->encryption === 'xor') {
+				$packet = $this->simpleXor($packet, $iv);
+			} elseif (false === $packet = $this->encrypt($packet, $iv)) {
 				return false;
 			}
 		}
@@ -170,27 +173,37 @@ abstract class SendNsca
 		return $crypt;
 	}
 
-	private function simple_xor($packet, $iv)
+	/**
+	 * Encrypts a package using nagios simple xor algoritm
+	 *
+	 * @param string $packet
+	 * @param string $initializationVector
+	 * @return mixed
+	 */
+	private function simpleXor($packet, $initializationVector)
 	{
-		$packet_size = strlen($packet);
-		$iv_size = strlen($iv);
+		$packetSize = strlen($packet);
+		$ivSize = strlen($initializationVector);
 		/* rotate over IV we received from the server... */
-		for ($y = 0, $x = 0; $y < $packet_size; $y++, $x++) {
+		for ($y = 0, $x = 0; $y < $packetSize; $y++, $x++) {
 
 			/* keep rotating over IV */
-			if ($x >= $iv_size)
+			if ($x >= $ivSize) {
 				$x = 0;
+			}
 
-			$packet[$y] = $packet[$y] ^ $iv[$x];
+
+			$packet[$y] = $packet[$y] ^ $initializationVector[$x];
 		}
 
 		/* rotate over password... */
-		$password_length = strlen($this->password);
-		for ($y = 0, $x = 0; $y < $packet_size; $y++,$x++){
+		$passwordLength = strlen($this->password);
+		for ($y = 0, $x = 0; $y < $packetSize; $y++, $x++) {
 
 			/* keep rotating over password */
-			if ($x >= $password_length)
+			if ($x >= $passwordLength) {
 				$x = 0;
+			}
 
 			$packet[$y] = $packet[$y] ^ $this->password[$x];
 		}
@@ -203,7 +216,7 @@ abstract class SendNsca
 	 * Fills buffer with random data (O RLY) for better encryption results.
 	 *
 	 * @param string $buffer
-	 * @param int $maxBufferSize
+	 * @param integer $maxBufferSize
 	 */
 	private function fillBufferWithRandomData(&$buffer, $maxBufferSize)
 	{
@@ -212,5 +225,4 @@ abstract class SendNsca
 			$buffer .= chr(mt_rand(0, 255));
 		}
 	}
-
 }

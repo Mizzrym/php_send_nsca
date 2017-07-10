@@ -1,6 +1,6 @@
 {
-  "name": "uni-tel/php_send_nsca",
-  "description": "NSCA",
+  "name": "Mizzrym/php_send_nsca",
+  "description": "PHP implementation of NSCA client",
   "license": "MIT",
   "authors": [
     {

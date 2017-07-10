@@ -1,6 +1,6 @@
 <?php
 
-namespace UniTel\PHPSendNSCA;
+namespace PhpSendNsca;
 
 /**
  * Class to send Nagios passive checks to nsca daemon
@@ -178,6 +178,7 @@ abstract class SendNsca
 	 *
 	 * @param string $packet
 	 * @param string $initializationVector
+	 * @author nueaf
 	 * @return mixed
 	 */
 	private function simpleXor($packet, $initializationVector)
@@ -186,30 +187,23 @@ abstract class SendNsca
 		$ivSize = strlen($initializationVector);
 		/* rotate over IV we received from the server... */
 		for ($y = 0, $x = 0; $y < $packetSize; $y++, $x++) {
-
 			/* keep rotating over IV */
 			if ($x >= $ivSize) {
 				$x = 0;
 			}
-
-
 			$packet[$y] = $packet[$y] ^ $initializationVector[$x];
 		}
 
 		/* rotate over password... */
 		$passwordLength = strlen($this->password);
 		for ($y = 0, $x = 0; $y < $packetSize; $y++, $x++) {
-
 			/* keep rotating over password */
 			if ($x >= $passwordLength) {
 				$x = 0;
 			}
-
 			$packet[$y] = $packet[$y] ^ $this->password[$x];
 		}
-
 		return $packet;
-
 	}
 
 	/**

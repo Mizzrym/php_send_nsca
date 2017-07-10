@@ -1,6 +1,6 @@
 <?php
 
-namespace UniTel\PHPSendNSCA;
+namespace PhpSendNsca;
 
 /**
  * Class provides Nagios Status Codes

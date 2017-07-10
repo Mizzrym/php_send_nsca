@@ -1,7 +1,7 @@
 <?php
 
-use UniTel\PHPSendNSCA\NagiosCodes;
-use UniTel\PHPSendNSCA\SendNsca;
+use PhpSendNsca\NagiosCodes;
+use PhpSendNsca\SendNsca;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -15,8 +15,8 @@ class SendNscaClient extends SendNsca
 {
 	protected $hostname = '127.0.0.1';
 	protected $port = '5667';
-	protected $encryption = 'xor';
-	protected $password = 'password';
+	protected $encryption = \MCRYPT_3DES;
+	protected $password = 'iwantedtousepenisasapasswordbutiitsaiditwastooshort';
 }
 
 /*

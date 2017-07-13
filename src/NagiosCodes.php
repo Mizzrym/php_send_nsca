@@ -4,8 +4,10 @@ namespace PhpSendNsca;
 
 /**
  * Class provides Nagios Status Codes
+ *
+ * @author Mizzrym
  */
-abstract class NagiosCodes
+class NagiosCodes
 {
 	const STATE_OK = 0;
 	const STATE_WARNING = 1;

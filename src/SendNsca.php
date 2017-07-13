@@ -7,7 +7,7 @@ namespace PhpSendNsca;
  *
  * @author Mizzrym
  */
-class SendNsca {
+class SendNsca extends NagiosCodes {
 	/**
 	 * Default NSCA port
 	 */
@@ -122,7 +122,7 @@ class SendNsca {
 		if (strlen($message) >= 512) {
 			return false;
 		}
-		$reflection = new \ReflectionClass(NagiosCodes::class);
+		$reflection = new \ReflectionClass('\\' . __NAMESPACE__ . '\\NagiosCodes');
 		if (! in_array($returncode, $reflection->getConstants())) {
 			return false;
 		}

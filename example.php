@@ -1,6 +1,5 @@
 <?php
 
-use PhpSendNsca\NagiosCodes;
 use PhpSendNsca\SendNsca;
 
 require __DIR__ . '/vendor/autoload.php';
@@ -35,4 +34,4 @@ define service{
  */
 
 $nsca = new MySendNscaClient();
-$nsca->send('example-server', 'example-service', NagiosCodes::STATE_OK, 'potato');
+$nsca->send('example-server', 'example-service', MySendNscaClient::STATE_OK, 'potato');

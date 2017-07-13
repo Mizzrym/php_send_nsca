@@ -5,18 +5,14 @@ use PhpSendNsca\SendNsca;
 
 require __DIR__ . '/vendor/autoload.php';
 
-/**
- * Class SendNscaClient
- *
- * Build your own class to load your configuration with your own preferred method.
- * This is an example of how it could look like
- */
-class SendNscaClient extends SendNsca
+class MySendNscaClient extends SendNsca
 {
-	protected $hostname = '127.0.0.1';
-	protected $port = '5667';
-	protected $encryption = \MCRYPT_3DES;
-	protected $password = 'iwantedtousepenisasapasswordbutiitsaiditwastooshort';
+	/**
+	 * SendNscaClient constructor.
+	 */
+	public function __construct() {
+		parent::__construct('127.0.0.1:5667', \MCRYPT_3DES, 'iwantedtousepenisasapasswordbutiitsaiditwastooshort');
+	}
 }
 
 /*
@@ -38,5 +34,5 @@ define service{
  * The send call itself should not need much explanation.
  */
 
-$nsca = new SendNscaClient();
+$nsca = new MySendNscaClient();
 $nsca->send('example-server', 'example-service', NagiosCodes::STATE_OK, 'potato');

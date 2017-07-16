@@ -7,7 +7,7 @@ send nsca implementation in PHP for nagios.
 usage
 -----
 
-See example.php and MyNscaClassExample.php
+See example.php
 
 
 important

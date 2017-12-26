@@ -25,9 +25,9 @@
   "autoload": {
     "psr-4": {
       "PhpSendNsca\\": "src",
-      "PhpSendNsca\\exceptions": "src/exceptions",
-      "PhpSendNsca\\interfaces": "src/interfaces",
-      "PhpSendNsca\\encryptors": "src/encryptors"
+      "PhpSendNsca\\exceptions\\": "src/exceptions",
+      "PhpSendNsca\\interfaces\\": "src/interfaces",
+      "PhpSendNsca\\encryptors\\": "src/encryptors"
     }
   }
 }

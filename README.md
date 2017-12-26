@@ -18,4 +18,5 @@ important
 errorhandling
 -------------
 
-The class will return true or false. Be aware that wrong encryption typenames can lead to critical failures that will stop your programs execution at runtime (if you don't handle errors on your own)
+The class used to return true or false and didn't throw any exceptions. However, 
+this behaviour has been changed. If you still want to have a "silent" nsca implementation, extend the class and let the send method catch all exceptions

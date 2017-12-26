@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpSendNsca;
+namespace PhpSendNsca\interfaces;
 
 /**
  * Class provides Nagios Status Codes

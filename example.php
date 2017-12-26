@@ -5,7 +5,7 @@ use PhpSendNsca\encryptors\OpenSslEncryptor;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$encryptor = new LegacyEncryptor(OpenSslEncryptor::ENCRYPT_3DES, 'somepassword');
+$encryptor = new OpenSslEncryptor(OpenSslEncryptor::ENCRYPT_3DES, 'somepassword');
 $nsca = new SendNsca('my.nagioshost.local:5667', $encryptor);
 
 /*

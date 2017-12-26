@@ -26,15 +26,17 @@ class SendNscaFactory {
      * Creates SendNsca class
      * 
      * @param string $connectionString
-     * @param int $encryptionMethod see EncryptorInterface constants
+     * @param int $encryptionCipher see EncryptorInterface constants
      * @param string $encryptionPassword leave empty if no encryption has been chosen
      * @throws \Exception
      * @return SendNsca
      */
-    public function getSendNsca(string $connectionString, int $encryptionMethod = EncryptorInterface::ENCRYPT_NONE, string $encryptionPassword = ''): SendNsca {
-        $key = md5($connectionString . ':' . $encryptionMethod . ':' . $encryptionPassword);
+    public function getSendNsca(string $connectionString, int $encryptionCipher = null, string $encryptionPassword = null): SendNsca {
+        $password = $encryptionPassword ?? '';
+        $cipher = $encryptionCipher ?? EncryptorInterface::ENCRYPT_NONE;
+        $key = md5($connectionString . ':' . $cipher . ':' . $password);
         if (isset(static::$instances[$key])) {
-            static::$instances[$key] = new SendNsca($connectionString, $this->getEncryptor($encryptionMethod, $encryptionPassword));
+            static::$instances[$key] = new SendNsca($connectionString, $this->getEncryptor($cipher, $password));
         }
         return static::$instances[$key];
     }

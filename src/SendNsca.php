@@ -88,7 +88,8 @@ class SendNsca extends NagiosCodes {
      * @throws \Exception only if mode is development mode with exceptions enabled
      * @return true|false true on success.
      */
-    public function send(string $host, string $service, int $returncode, string $message = '') {
+    public function send(string $host, string $service, int $returncode, string $message = null) {
+        $message = $message ?? '';
         if ($this->hostname === null) {
             throw new Exception('No hostname for NSCA daemon given, don\'t know where to connect to - class not properly initialized');
         }

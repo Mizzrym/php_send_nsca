@@ -27,4 +27,4 @@ define service{
  * The send call itself should not need much explanation.
  */
 
-$nsca->send('example-server', 'example-service', MySendNscaClient::STATE_OK, 'potato');
+$nsca->send('example-server', 'example-service', SendNsca::STATE_OK, 'potato');

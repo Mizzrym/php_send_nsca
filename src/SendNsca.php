@@ -11,7 +11,7 @@ use PhpSendNsca\interfaces\NagiosCodes;
  * @author Mizzrym
  */
 class SendNsca extends NagiosCodes {
-
+    
     /**
      * Default NSCA port
      */
@@ -124,7 +124,7 @@ class SendNsca extends NagiosCodes {
         $iv = stream_get_contents($connection, 128); //initialisation vector for encryption
         $timestampRaw = unpack('N', stream_get_contents($connection, 4));
         $timestamp = reset($timestampRaw);
-        
+
         // fill buffer
         $this->fillBufferWithRandomData($host, 64);
         $this->fillBufferWithRandomData($service, 128);
@@ -137,9 +137,7 @@ class SendNsca extends NagiosCodes {
 
         // encrypt
         if ($this->encryptor) {
-            var_dump(base64_encode($packet));
             $packet = $this->encryptor->encryptPacket($packet, $iv);
-            var_dump(base64_encode($packet));
         }
 
         // send it
@@ -161,5 +159,4 @@ class SendNsca extends NagiosCodes {
             $buffer .= chr(mt_rand(0, 255));
         }
     }
-
 }

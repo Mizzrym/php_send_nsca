@@ -3,18 +3,25 @@ php send nsca
 
 send nsca implementation in PHP for nagios.
 
-php versions
-------------
-- 7.2+ You have to use the OpenSslEncryptor with DES or 3DES encryption
-- 7.0+ You can use the LegacyEncryptor for full compatibility with any nsca ciphers
-- lower than 7.0: Checkout Version 1.1.3
-- lower than 5.3: not supported
+compatibility
+-------------
+For php versions lower than 7.0.0 use php_send_nsca version 1.1.3
+
+No support for php versions lower than 5.3. C'mon guys, it's almost 2018.
 
 
 usage
 -----
 
-See example.php
+If you don't know exactly what kind of encryptor you want to use, make use of the SendNscaFactory.
+
+You have to provide a connection string like 'nagios.local', a cipher and a password. There is a list of constants for the ciphers available in interfaces/Ciphers.php, but you can 
+also just copy&paste the integer value from your nsca configuration, since they match the constants. 
+
+If you know what you're doing you can also construct SendNsca yourself. You have to pick from three encryptors however. 
+- use the XorEncryptor for Xor Encryption only
+- use the OpenSslEncryptor for DES and Triple-DES encryption
+- use the LegacyEncryptor for anything else, but keep in mind that it uses the mcrypt extension which was dropped in php 7.2
 
 
 important

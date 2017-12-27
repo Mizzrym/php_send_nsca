@@ -10,7 +10,7 @@ use PhpSendNsca\interfaces\NagiosCodes;
  *
  * @author Mizzrym
  */
-class SendNsca extends NagiosCodes {
+class SendNsca implements NagiosCodes {
     
     /**
      * Default NSCA port
@@ -32,7 +32,8 @@ class SendNsca extends NagiosCodes {
     protected $port = self::DEFAULT_PORT;
 
     /**
-     *
+     * Will make use of an encryptor if there is one available
+     * 
      * @var encryptors\EncryptorInterface
      */
     protected $encryptor;

@@ -1,12 +1,11 @@
 <?php
 
-use PhpSendNsca\SendNsca;
-use PhpSendNsca\encryptors\OpenSslEncryptor;
+use PhpSendNsca\SendNscaFactory;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$encryptor = new OpenSslEncryptor(OpenSslEncryptor::ENCRYPT_3DES, 'somepassword');
-$nsca = new SendNsca('my.nagioshost.local:5667', $encryptor);
+$factory = new SendNscaFactory();
+$nsca = $factory->getSendNsca('localhost', SendNscaFactory::ENCRYPT_3DES, 'somepassword');
 
 /*
  * configuration in nagios could look like this:
@@ -27,4 +26,4 @@ define service{
  * The send call itself should not need much explanation.
  */
 
-$nsca->send('example-server', 'example-service', SendNsca::STATE_OK, 'potato');
+$nsca->send('example-server', 'example-service', $nsca::STATE_OK, 'potato');

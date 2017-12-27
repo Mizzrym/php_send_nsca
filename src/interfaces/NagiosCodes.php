@@ -3,11 +3,11 @@
 namespace PhpSendNsca\interfaces;
 
 /**
- * Class provides Nagios Status Codes
+ * Interface to provide Nagios Status Codes
  *
  * @author Mizzrym
  */
-class NagiosCodes
+interface NagiosCodes
 {
 	const STATE_OK = 0;
 	const STATE_WARNING = 1;

@@ -37,11 +37,12 @@ class SendNscaFactory implements Ciphers {
      *       the other factory method "getSendNsca" instead. 
      * 
      * @param string $connectionString
-     * @param string $path
+     * @param string $path if omitted will use '/etc/send_nsca.cfg'
      * @return SendNsca
      * @throws Exception
      */
-    public function getSendNscaFromConfig(string $connectionString, string $path = '/etc/send_nsca.cfg'): SendNsca {
+    public function getSendNscaFromConfig(string $connectionString, string $path = null): SendNsca {
+        $path = $path ?? '/etc/send_nsca.cfg';
         // sanity/permission check
         if (false === is_readable($path)) {
             throw new Exception('Cannot read file at ' . $path);

@@ -11,7 +11,7 @@ use PhpSendNsca\interfaces\NagiosCodes;
  * @author Mizzrym
  */
 class SendNsca implements NagiosCodes {
-    
+
     /**
      * Default NSCA port
      */
@@ -87,7 +87,6 @@ class SendNsca implements NagiosCodes {
      * @param integer $returncode Nagios State-code.
      * @param string $message Message (optional).
      * @throws \Exception only if mode is development mode with exceptions enabled
-     * @return true|false true on success.
      */
     public function send(string $host, string $service, int $returncode, string $message = null) {
         $message = $message ?? '';
@@ -103,11 +102,9 @@ class SendNsca implements NagiosCodes {
             $service = substr($service, 0, 127);
         }
         if (strlen($message) >= 512) {
-            trigger_error('Message too long (max 512 characters) - truncated', \E_USER_WARNING);
             $message = substr($message, 0, 511);
         }
-        $reflection = new \ReflectionClass('\\' . __NAMESPACE__ . '\\interfaces\\NagiosCodes');
-        if (!in_array($returncode, $reflection->getConstants())) {
+        if (false === $this->isReturncodeValid($returncode)) {
             throw new \Exception('unknown return code: ' . $returncode);
         }
 
@@ -146,7 +143,6 @@ class SendNsca implements NagiosCodes {
         fflush($connection);
         fwrite($connection, $packet);
         fclose($connection);
-        return true;
     }
 
     /**
@@ -161,4 +157,15 @@ class SendNsca implements NagiosCodes {
             $buffer .= chr(mt_rand(0, 255));
         }
     }
-}
+
+    /**
+     * Determines if given returncode is a valid code that nagios understands
+     * 
+     * @param int $code
+     * @return bool
+     */
+    protected function isReturncodeValid(int $code): bool {
+        $reflection = new \ReflectionClass('\\' . __NAMESPACE__ . '\\interfaces\\NagiosCodes');
+        return in_array($code, $reflection->getConstants());
+    }
+}  

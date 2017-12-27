@@ -106,6 +106,7 @@ class SendNscaFactory implements Ciphers {
         try {
             $encryptor = $this->getOpenSslEncryptor($cipher, $password);
         } catch (\Exception $exc) {
+            trigger_error('Falling back to legacy encryption, openssl failed: ' . $exc->getMessage(), E_DEPRECATED);
             $encryptor = $this->getLegacyEncryptor($cipher, $password);
         }
         return $encryptor;
@@ -119,7 +120,7 @@ class SendNscaFactory implements Ciphers {
      * @throws Exception
      * @return XorEncryptor
      */
-    private function getXorEncryptor(int $cipher, string $password): XorEncryptor {
+    public function getXorEncryptor(int $cipher, string $password): XorEncryptor {
         return new XorEncryptor($cipher, $password);
     }
 
@@ -130,11 +131,15 @@ class SendNscaFactory implements Ciphers {
      * @return OpenSslEncryptor
      * @throws Exception
      */
-    private function getOpenSslEncryptor(int $cipher, string $password): OpenSslEncryptor {
+    public function getOpenSslEncryptor(int $cipher, string $password): OpenSslEncryptor {
         if (false === extension_loaded('openssl')) {
-            throw new Exception('OpenSSL Extension not available');
+            throw new \Exception('OpenSSL Extension not available');
         }
-        return new OpenSslEncryptor($cipher, $password);
+        $encryptor = new OpenSslEncryptor($cipher, $password);
+        if (false === $encryptor->isEncryptionCipherSupported($cipher)) {
+            throw new \Exception('Trying to use unsupported encryption cipher');
+        }
+        return $encryptor;
     }
 
     /**
@@ -144,12 +149,12 @@ class SendNscaFactory implements Ciphers {
      * @return LegacyEncryptor
      * @throws Exception
      */
-    private function getLegacyEncryptor(int $cipher, string $password): LegacyEncryptor {
+    public function getLegacyEncryptor(int $cipher, string $password): LegacyEncryptor {
         if (PHP_VERSION_ID >= 702000) {
-            throw new Exception('Mcrypt extension not available');
+            throw new \Exception('Mcrypt extension not available');
         }
         if (false === extension_loaded('mcrypt')) {
-            throw new Exception('Mcrypt extension not loaded');
+            throw new \Exception('Mcrypt extension not loaded');
         }
         return new LegacyEncryptor($cipher, $password);
     }

@@ -32,9 +32,6 @@ abstract class AbstractEncryptor implements EncryptorInterface {
      * @throws EncryptionException
      */
     public function __construct(int $encryptionCipher, string $password) {
-        if(false === $this->isEncryptionCipherSupported($encryptionCipher)) {
-            throw new EncryptionException('Trying to use unsupported encryption cipher');
-        }
         $this->encryptionCipher = $encryptionCipher;
         $this->encryptionPassword = $password;
     }

@@ -88,7 +88,7 @@ class SendNsca implements NagiosCodes {
      * @param string $message Message (optional).
      * @throws \Exception only if mode is development mode with exceptions enabled
      */
-    public function send(string $host, string $service, int $returncode, string $message = null) {
+    public function send(string $host, string $service, int $returncode, string $message = null) : void {
         $message = $message ?? '';
         if ($this->hostname === null) {
             throw new Exception('No hostname for NSCA daemon given, don\'t know where to connect to - class not properly initialized');
@@ -110,11 +110,10 @@ class SendNsca implements NagiosCodes {
 
         // try to connect to host
         $errno = $errstr = null;
-        // i hate myself for using '@' to suppress the warning, but spam in logfiles had to be prevented
-        $connection = @stream_socket_client(
+        $connection = stream_socket_client(
                         $this->hostname . ':' . $this->port, $errno, $errstr, $this->connectTimeout
         );
-        if (!$connection) {
+        if (false === $connection) {
             throw new \Exception('Cannot connect to nsca daemon ' . $this->hostname . ':' . $this->port);
         }
         stream_set_timeout($connection, $this->streamTimeout);
@@ -143,6 +142,7 @@ class SendNsca implements NagiosCodes {
         fflush($connection);
         fwrite($connection, $packet);
         fclose($connection);
+        return;
     }
 
     /**
@@ -151,11 +151,12 @@ class SendNsca implements NagiosCodes {
      * @param string $buffer
      * @param integer $maxBufferSize
      */
-    protected function fillBufferWithRandomData(&$buffer, $maxBufferSize) {
+    protected function fillBufferWithRandomData(&$buffer, $maxBufferSize) : void {
         $buffer .= "\0";
         while (strlen($buffer) < $maxBufferSize) {
             $buffer .= chr(mt_rand(0, 255));
         }
+        return;
     }
 
     /**

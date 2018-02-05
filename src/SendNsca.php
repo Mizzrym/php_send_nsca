@@ -61,7 +61,7 @@ class SendNsca implements NagiosCodes {
      * SendNsca constructor.
      *
      * @param string $connectionString Examples: 127.0.0.1, localhost:5667, some.server.local:5555, nagios.local
-     * @param null|string $encryptor (optional) Class to encrypt the package with
+     * @param null|EncryptorInterface $encryptor (optional) Class to encrypt the package with
      */
     public function __construct(string $connectionString, EncryptorInterface $encryptor = null) {
         if (strpos($connectionString, ':')) {

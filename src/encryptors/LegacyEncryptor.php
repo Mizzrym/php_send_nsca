@@ -139,8 +139,7 @@ class LegacyEncryptor extends AbstractEncryptor implements EncryptorInterface {
         $encryptedPackage = mcrypt_encrypt($mcryptCipher, $pass, $packet, $this->encryptionMode, $civ);
         if (false === $encryptedPackage) {
             throw new EncryptionException('Failed to encrypt package. ' .
-                    'Check if your password is long enough for the cipher ' . 
-                    'you chose'
+                    'Check if your password is long enough for the cipher you chose'
             );
         }
         return $encryptedPackage;

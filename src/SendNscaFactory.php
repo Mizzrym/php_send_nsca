@@ -106,7 +106,7 @@ class SendNscaFactory implements Ciphers {
         try {
             $encryptor = $this->getOpenSslEncryptor($cipher, $password);
         } catch (\Exception $exc) {
-            trigger_error('Falling back to legacy encryption, openssl failed: ' . $exc->getMessage(), E_DEPRECATED);
+            trigger_error('Falling back to legacy encryption, openssl failed: ' . $exc->getMessage(), \E_DEPRECATED);
             $encryptor = $this->getLegacyEncryptor($cipher, $password);
         }
         return $encryptor;

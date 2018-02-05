@@ -54,7 +54,6 @@ class XorEncryptor extends AbstractEncryptor implements EncryptorInterface {
             $packet[$y] = $packet[$y] ^ $this->encryptionPassword[$x];
         }
         return $packet;
-        ;
     }
 
 }

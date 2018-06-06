@@ -7,7 +7,7 @@ compatibility
 -------------
 For php versions lower than 7.0.0 use php_send_nsca version 1.1.3
 
-No support for php versions lower than 5.3. C'mon guys, it's almost 2018.
+No support for php versions lower than 5.3. C'mon guys, it's 2018.
 
 
 usage

@@ -73,6 +73,35 @@ class SendNsca implements NagiosCodes {
         }
         $this->encryptor = $encryptor;
     }
+    
+    /**
+     * Sends passive service check
+     * 
+     * @param string $host
+     * @param string $service
+     * @param int $returncode
+     * @param string $message
+     * @throws \InvalidArgumentException
+     * @throws \Exception
+     */
+    public function sendServiceCheck(string $host, string $service, int $returncode, string $message = null) {
+        if ('' === $service || "\0" === $service) {
+            throw new \InvalidArgumentException('service can not be empty');
+        }
+        return $this->send($host, $service, $returncode, $message);
+    }
+    
+    /**
+     * Sends passive host check
+     * 
+     * @param string $host
+     * @param int $returncode
+     * @param string $message
+     * @throws \Exception
+     */
+    public function sendHostCheck(string $host, int $returncode, string $message = null) {
+        return $this->send($host, '', $message, $returncode);
+    }
 
     /**
      * Sends check result to nagios host. nagios/nsca will determine where to use the result using
@@ -81,12 +110,13 @@ class SendNsca implements NagiosCodes {
      * Use the NagiosCodes class constants to set the appropriate returncode.
      * Sending a message is optional.
      * Both hostname and service are case sensitive.
+     * To send a passive host check let $service be an empty string
      *
      * @param string $host Hostname.
      * @param string $service Name of the service.
      * @param integer $returncode Nagios State-code.
      * @param string $message Message (optional).
-     * @throws \Exception only if mode is development mode with exceptions enabled
+     * @throws \Exception 
      */
     public function send(string $host, string $service, int $returncode, string $message = null) {
         $message = $message ?? '';

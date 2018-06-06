@@ -14,7 +14,7 @@ interface NagiosCodes
 	const STATE_CRITICAL = 2;
 	const STATE_UNKNOWN = 3;
 	const HOST_UP = 0;
-	const HOST_WARNING = 1;
+        const HOST_UPDOWN = 1; // Host state will be determined by nagios
 	const HOST_DOWN = 2;
 	const HOST_UNKNOWN = 3;
 }

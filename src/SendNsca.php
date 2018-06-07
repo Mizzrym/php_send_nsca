@@ -73,7 +73,7 @@ class SendNsca implements NagiosCodes {
         }
         $this->encryptor = $encryptor;
     }
-    
+
     /**
      * Sends passive service check
      * 
@@ -90,7 +90,7 @@ class SendNsca implements NagiosCodes {
         }
         return $this->send($host, $service, $returncode, $message);
     }
-    
+
     /**
      * Sends passive host check
      * 
@@ -100,7 +100,7 @@ class SendNsca implements NagiosCodes {
      * @throws \Exception
      */
     public function sendHostCheck(string $host, int $returncode, string $message = null) {
-        return $this->send($host, '', $message, $returncode);
+        return $this->send($host, '', $returncode, $message);
     }
 
     /**
@@ -141,7 +141,7 @@ class SendNsca implements NagiosCodes {
         // try to connect to host
         $errno = $errstr = null;
         $connection = stream_socket_client(
-                        $this->hostname . ':' . $this->port, $errno, $errstr, $this->connectTimeout
+                $this->hostname . ':' . $this->port, $errno, $errstr, $this->connectTimeout
         );
         if (false === $connection) {
             throw new \Exception('Cannot connect to nsca daemon ' . $this->hostname . ':' . $this->port);
@@ -197,4 +197,5 @@ class SendNsca implements NagiosCodes {
         $reflection = new \ReflectionClass('\\' . __NAMESPACE__ . '\\interfaces\\NagiosCodes');
         return in_array($code, $reflection->getConstants());
     }
-}  
+
+}

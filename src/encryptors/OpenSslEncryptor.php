@@ -2,7 +2,6 @@
 
 namespace PhpSendNsca\encryptors;
 
-use PhpSendNsca\encryptors\AbstractEncryptor;
 use PhpSendNsca\interfaces\EncryptorInterface;
 use PhpSendNsca\exceptions\EncryptionException;
 
@@ -44,7 +43,7 @@ class OpenSslEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * @return string
      * @throws EncryptionException
      */
-    private function translateCipher(int $nscaName) : string {
+    private function translateCipher($nscaName) {
         if (isset($this->cipherMap[$nscaName])) {
             return $this->cipherMap[$nscaName];
         }
@@ -59,7 +58,7 @@ class OpenSslEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * @return string
      * @throws EncryptionException
      */
-    public function encryptPacket(string $packet, string $initialisationVector) : string {
+    public function encryptPacket($packet, $initialisationVector) {
         $sslCipher = $this->translateCipher($this->encryptionCipher);
         $len = openssl_cipher_iv_length($sslCipher);
         if (false === is_int($len)) {

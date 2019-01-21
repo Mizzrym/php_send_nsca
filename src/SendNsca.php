@@ -34,7 +34,7 @@ class SendNsca implements NagiosCodes {
     /**
      * Will make use of an encryptor if there is one available
      * 
-     * @var encryptors\EncryptorInterface
+     * @var interfaces\EncryptorInterface
      */
     protected $encryptor;
 
@@ -63,7 +63,7 @@ class SendNsca implements NagiosCodes {
      * @param string $connectionString Examples: 127.0.0.1, localhost:5667, some.server.local:5555, nagios.local
      * @param null|EncryptorInterface $encryptor (optional) Class to encrypt the package with
      */
-    public function __construct(string $connectionString, EncryptorInterface $encryptor = null) {
+    public function __construct($connectionString, EncryptorInterface $encryptor = null) {
         if (strpos($connectionString, ':')) {
             $connect = explode(':', $connectionString);
             $this->hostname = $connect[0];
@@ -84,7 +84,7 @@ class SendNsca implements NagiosCodes {
      * @throws \InvalidArgumentException
      * @throws \Exception
      */
-    public function sendServiceCheck(string $host, string $service, int $returncode, string $message = null) {
+    public function sendServiceCheck($host, $service, $returncode, $message = null) {
         if ('' === $service || "\0" === $service) {
             throw new \InvalidArgumentException('service can not be empty');
         }
@@ -99,7 +99,7 @@ class SendNsca implements NagiosCodes {
      * @param string $message
      * @throws \Exception
      */
-    public function sendHostCheck(string $host, int $returncode, string $message = null) {
+    public function sendHostCheck($host, $returncode, $message = null) {
         return $this->send($host, '', $returncode, $message);
     }
 
@@ -118,10 +118,10 @@ class SendNsca implements NagiosCodes {
      * @param string $message Message (optional).
      * @throws \Exception 
      */
-    public function send(string $host, string $service, int $returncode, string $message = null) {
-        $message = $message ?? '';
+    public function send($host, $service, $returncode, $message = null) {
+        $message = is_null($message) ? '' : $message;
         if ($this->hostname === null) {
-            throw new Exception('No hostname for NSCA daemon given, don\'t know where to connect to - class not properly initialized');
+            throw new \Exception('No hostname for NSCA daemon given, don\'t know where to connect to - class not properly initialized');
         }
         if (strlen($host) >= 64) {
             trigger_error('Host name too long (max 64 characters) - truncated', \E_USER_WARNING);
@@ -186,16 +186,20 @@ class SendNsca implements NagiosCodes {
             $buffer .= chr(mt_rand(0, 255));
         }
     }
-
-    /**
-     * Determines if given returncode is a valid code that nagios understands
-     * 
-     * @param int $code
-     * @return bool
-     */
-    protected function isReturncodeValid(int $code): bool {
-        $reflection = new \ReflectionClass('\\' . __NAMESPACE__ . '\\interfaces\\NagiosCodes');
-        return in_array($code, $reflection->getConstants());
+	
+	/**
+	 * Determines if given returncode is a valid code that nagios understands
+	 *
+	 * @param int $code
+	 * @return bool
+	 */
+    protected function isReturncodeValid($code) {
+    	try {
+			$reflection = new \ReflectionClass('\\' . __NAMESPACE__ . '\\interfaces\\NagiosCodes');
+			return in_array($code, $reflection->getConstants());
+		} catch (\ReflectionException $exception) {
+    		return false;
+		}
     }
 
 }

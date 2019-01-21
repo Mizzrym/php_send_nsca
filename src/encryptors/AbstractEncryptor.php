@@ -3,7 +3,6 @@
 namespace PhpSendNsca\encryptors;
 
 use PhpSendNsca\interfaces\EncryptorInterface;
-use PhpSendNsca\exceptions\EncryptionException;
 
 /**
  * Basic Encryptor implementation
@@ -29,9 +28,8 @@ abstract class AbstractEncryptor implements EncryptorInterface {
      * 
      * @param int $encryptionCipher
      * @param string $password
-     * @throws EncryptionException
      */
-    public function __construct(int $encryptionCipher, string $password) {
+    public function __construct($encryptionCipher, $password) {
         $this->encryptionCipher = $encryptionCipher;
         $this->encryptionPassword = $password;
     }
@@ -41,7 +39,7 @@ abstract class AbstractEncryptor implements EncryptorInterface {
      * @param int $encryptionCipher
      * @return bool
      */
-    public function isEncryptionCipherSupported(int $encryptionCipher): bool {
+    public function isEncryptionCipherSupported($encryptionCipher) {
         return in_array($encryptionCipher, $this->getSupportedEncryptionCiphers());
     }
 

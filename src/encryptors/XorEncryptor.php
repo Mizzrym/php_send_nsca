@@ -3,7 +3,6 @@
 namespace PhpSendNsca\encryptors;
 
 use PhpSendNsca\interfaces\EncryptorInterface;
-use PhpSendNsca\encryptors\AbstractEncryptor;
 
 /**
  * Class that implements simpleXOR encryption
@@ -18,7 +17,7 @@ class XorEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * 
      * @return int[]
      */
-    public function getSupportedEncryptionCiphers() : array {
+    public function getSupportedEncryptionCiphers() {
         return [
             self::ENCRYPT_XOR
         ];
@@ -32,7 +31,7 @@ class XorEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * @param string $initialisationVector
      * @return string
      */
-    public function encryptPacket(string $packet, string $initialisationVector) : string {
+    public function encryptPacket($packet, $initialisationVector) {
         $packetSize = strlen($packet);
         $ivSize = strlen($initialisationVector);
         /* rotate over IV we received from the server... */

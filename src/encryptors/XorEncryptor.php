@@ -3,7 +3,6 @@
 namespace PhpSendNsca\encryptors;
 
 use PhpSendNsca\interfaces\EncryptorInterface;
-use PhpSendNsca\encryptors\AbstractEncryptor;
 
 /**
  * Class that implements simpleXOR encryption

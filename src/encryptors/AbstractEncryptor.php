@@ -2,8 +2,8 @@
 
 namespace PhpSendNsca\encryptors;
 
-use PhpSendNsca\interfaces\EncryptorInterface;
 use PhpSendNsca\exceptions\EncryptionException;
+use PhpSendNsca\interfaces\EncryptorInterface;
 
 /**
  * Basic Encryptor implementation

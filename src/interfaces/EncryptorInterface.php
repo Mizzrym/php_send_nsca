@@ -15,7 +15,7 @@ interface EncryptorInterface extends Ciphers {
      * @param int $encryptionCipher see ENCRYPT_* constants
      * @param string $password
      */
-    public function __construct(int $encryptionCipher, string $password);
+    public function __construct($encryptionCipher, $password);
 
     /**
      * Encrypt the package using the full initialisation vector
@@ -24,18 +24,18 @@ interface EncryptorInterface extends Ciphers {
      * @param string $initialisationVector the raw iv from the nsca daemon
      * @return string the encrypted package
      */
-    public function encryptPacket(string $packet, string $initialisationVector): string;
+    public function encryptPacket($packet, $initialisationVector);
 
     /**
      * Return an array containing all supported ciphers
      * @return int[]
      */
-    public function getSupportedEncryptionCiphers(): array;
+    public function getSupportedEncryptionCiphers();
 
     /**
      * Determine if a cipher is supported by this encryptor
      * @param int $encryptionCipher
      * @return bool
      */
-    public function isEncryptionCipherSupported(int $encryptionCipher): bool;
+    public function isEncryptionCipherSupported($encryptionCipher);
 }

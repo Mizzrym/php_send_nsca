@@ -32,7 +32,7 @@ class OpenSslEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * Determines which encryption ciphers are supported
      * @return int[]
      */
-    public function getSupportedEncryptionCiphers() {
+    public function getSupportedEncryptionCiphers() : array {
       return array_keys($this->cipherMap);
     }
     
@@ -43,7 +43,7 @@ class OpenSslEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * @return string
      * @throws EncryptionException
      */
-    private function translateCipher($nscaName) {
+    private function translateCipher(int $nscaName) : string {
         if (isset($this->cipherMap[$nscaName])) {
             return $this->cipherMap[$nscaName];
         }
@@ -58,7 +58,7 @@ class OpenSslEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * @return string
      * @throws EncryptionException
      */
-    public function encryptPacket($packet, $initialisationVector) {
+    public function encryptPacket(string $packet, string $initialisationVector) : string {
         $sslCipher = $this->translateCipher($this->encryptionCipher);
         $len = openssl_cipher_iv_length($sslCipher);
         if (false === is_int($len)) {

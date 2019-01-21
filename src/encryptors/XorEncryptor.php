@@ -17,7 +17,7 @@ class XorEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * 
      * @return int[]
      */
-    public function getSupportedEncryptionCiphers() {
+    public function getSupportedEncryptionCiphers() : array {
         return [
             self::ENCRYPT_XOR
         ];
@@ -31,7 +31,7 @@ class XorEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * @param string $initialisationVector
      * @return string
      */
-    public function encryptPacket($packet, $initialisationVector) {
+    public function encryptPacket(string $packet, string $initialisationVector) : string {
         $packetSize = strlen($packet);
         $ivSize = strlen($initialisationVector);
         /* rotate over IV we received from the server... */

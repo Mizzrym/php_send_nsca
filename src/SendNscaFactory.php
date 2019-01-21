@@ -2,7 +2,6 @@
 
 namespace PhpSendNsca;
 
-use PhpSendNsca\SendNsca;
 use PhpSendNsca\interfaces\Ciphers;
 use PhpSendNsca\encryptors\XorEncryptor;
 use PhpSendNsca\encryptors\LegacyEncryptor;
@@ -41,13 +40,15 @@ class SendNscaFactory implements Ciphers {
         }
         return static::$instances[$key];
     }
-
-    /**
-     * Tries to figure out correct encryptor for a given cipher
-     * @param int $cipher
-     * @param string $password
-     * @return EncryptorInterface
-     */
+	
+	/**
+	 * Tries to figure out correct encryptor for a given cipher
+	 *
+	 * @param int $cipher
+	 * @param string $password
+	 * @return EncryptorInterface
+	 * @throws \Exception
+	 */
     protected function getEncryptor(int $cipher, string $password): EncryptorInterface {
 		try {
 			if ($cipher === Ciphers::ENCRYPT_NONE) {
@@ -63,14 +64,15 @@ class SendNscaFactory implements Ciphers {
         }
         return $encryptor;
     }
-
-    /**
-     * Factorymethod for XorEncryptor
-     * 
-     * @param int $cipher
-     * @param string $password
-     * @return XorEncryptor
-     */
+	
+	/**
+	 * Factorymethod for XorEncryptor
+	 *
+	 * @param int $cipher
+	 * @param string $password
+	 * @return XorEncryptor
+	 * @throws exceptions\EncryptionException
+	 */
     public function getXorEncryptor(int $cipher, string $password) : XorEncryptor {
         return new XorEncryptor($cipher, $password);
     }

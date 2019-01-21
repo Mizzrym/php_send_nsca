@@ -28,7 +28,7 @@ class LegacyEncryptor extends AbstractEncryptor implements EncryptorInterface {
 	 * @param $password
 	 * @throws \Exception
 	 */
-	public function __construct($encryptionCipher, $password) {
+	public function __construct(int $encryptionCipher, string $password) {
 		parent::__construct($encryptionCipher, $password);
 		if (defined('MCRYPT_MODE_CFB')) {
 			$this->encryptionMode = \MCRYPT_MODE_CFB;
@@ -77,7 +77,7 @@ class LegacyEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * @return string
      * @throws EncryptionException
      */
-    protected function translateCipher($nscaName) {
+    protected function translateCipher(int $nscaName) : string {
         switch ($nscaName) {
             case self::ENCRYPT_DES:
                 return MCRYPT_DES;
@@ -133,7 +133,7 @@ class LegacyEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * @return string
      * @throws EncryptionException
      */
-    public function encryptPacket($packet, $initialisationVector) {
+    public function encryptPacket(string $packet, string $initialisationVector) : string {
         $mcryptCipher = $this->translateCipher($this->encryptionCipher);
         $len = mcrypt_get_iv_size($mcryptCipher, $this->encryptionMode);
         if (false === is_int($len)) {

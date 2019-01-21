@@ -34,7 +34,7 @@ class SendNsca implements NagiosCodes {
     /**
      * Will make use of an encryptor if there is one available
      * 
-     * @var encryptors\EncryptorInterface
+     * @var interfaces\EncryptorInterface
      */
     protected $encryptor;
 
@@ -63,7 +63,7 @@ class SendNsca implements NagiosCodes {
      * @param string $connectionString Examples: 127.0.0.1, localhost:5667, some.server.local:5555, nagios.local
      * @param null|EncryptorInterface $encryptor (optional) Class to encrypt the package with
      */
-    public function __construct(string $connectionString, EncryptorInterface $encryptor = null) {
+    public function __construct($connectionString, EncryptorInterface $encryptor = null) {
         if (strpos($connectionString, ':')) {
             $connect = explode(':', $connectionString);
             $this->hostname = $connect[0];
@@ -83,8 +83,9 @@ class SendNsca implements NagiosCodes {
      * @param string $message
      * @throws \InvalidArgumentException
      * @throws \Exception
+	 * @return bool
      */
-    public function sendServiceCheck(string $host, string $service, int $returncode, string $message = null) {
+    public function sendServiceCheck($host, $service, $returncode, $message = null) {
         if ('' === $service || "\0" === $service) {
             throw new \InvalidArgumentException('service can not be empty');
         }
@@ -98,8 +99,9 @@ class SendNsca implements NagiosCodes {
      * @param int $returncode
      * @param string $message
      * @throws \Exception
+	 * @return bool
      */
-    public function sendHostCheck(string $host, int $returncode, string $message = null) {
+    public function sendHostCheck($host, $returncode, $message = null) {
         return $this->send($host, '', $returncode, $message);
     }
 
@@ -116,62 +118,68 @@ class SendNsca implements NagiosCodes {
      * @param string $service Name of the service.
      * @param integer $returncode Nagios State-code.
      * @param string $message Message (optional).
-     * @throws \Exception 
+	 * @return bool
      */
-    public function send(string $host, string $service, int $returncode, string $message = null) {
-        $message = $message ?? '';
-        if ($this->hostname === null) {
-            throw new Exception('No hostname for NSCA daemon given, don\'t know where to connect to - class not properly initialized');
-        }
-        if (strlen($host) >= 64) {
-            trigger_error('Host name too long (max 64 characters) - truncated', \E_USER_WARNING);
-            $host = substr($host, 0, 63);
-        }
-        if (strlen($service) >= 128) {
-            trigger_error('Service name too long (max 128 characters) - truncated', \E_USER_WARNING);
-            $service = substr($service, 0, 127);
-        }
-        if (strlen($message) >= 512) {
-            $message = substr($message, 0, 511);
-        }
-        if (false === $this->isReturncodeValid($returncode)) {
-            throw new \Exception('unknown return code: ' . $returncode);
-        }
-
-        // try to connect to host
-        $errno = $errstr = null;
-        $connection = stream_socket_client(
-                $this->hostname . ':' . $this->port, $errno, $errstr, $this->connectTimeout
-        );
-        if (false === $connection) {
-            throw new \Exception('Cannot connect to nsca daemon ' . $this->hostname . ':' . $this->port);
-        }
-        stream_set_timeout($connection, $this->streamTimeout);
-
-        // read initial package
-        $iv = stream_get_contents($connection, 128); //initialisation vector for encryption
-        $timestampRaw = unpack('N', stream_get_contents($connection, 4));
-        $timestamp = reset($timestampRaw);
-
-        // fill buffer
-        $this->fillBufferWithRandomData($host, 64);
-        $this->fillBufferWithRandomData($service, 128);
-        $this->fillBufferWithRandomData($message, 512);
-
-        // build package
-        $crcPacket = pack('nxxxxxxNna64a128a512xx', 3, $timestamp, $returncode, $host, $service, $message);
-        $crc = crc32($crcPacket);
-        $packet = pack('nxxNNna64a128a512xx', 3, $crc, $timestamp, $returncode, $host, $service, $message);
-
-        // encrypt
-        if ($this->encryptor) {
-            $packet = $this->encryptor->encryptPacket($packet, $iv);
-        }
-
-        // send it
-        fflush($connection);
-        fwrite($connection, $packet);
-        fclose($connection);
+    public function send($host, $service, $returncode, $message = null) {
+    	try {
+			$message = is_null($message) ? '' : $message;
+			if ($this->hostname === null) {
+				throw new \Exception('No hostname for NSCA daemon given, don\'t know where to connect to - class not properly initialized');
+			}
+			if (strlen($host) >= 64) {
+				trigger_error('Host name too long (max 64 characters) - truncated', \E_USER_WARNING);
+				$host = substr($host, 0, 63);
+			}
+			if (strlen($service) >= 128) {
+				trigger_error('Service name too long (max 128 characters) - truncated', \E_USER_WARNING);
+				$service = substr($service, 0, 127);
+			}
+			if (strlen($message) >= 512) {
+				$message = substr($message, 0, 511);
+			}
+			if (false === $this->isReturncodeValid($returncode)) {
+				throw new \Exception('unknown return code: ' . $returncode);
+			}
+		
+			// try to connect to host
+			$errno = $errstr = null;
+			$connection = stream_socket_client(
+				$this->hostname . ':' . $this->port, $errno, $errstr, $this->connectTimeout
+			);
+			if (false === $connection) {
+				throw new \Exception('Cannot connect to nsca daemon ' . $this->hostname . ':' . $this->port);
+			}
+			stream_set_timeout($connection, $this->streamTimeout);
+		
+			// read initial package
+			$iv = stream_get_contents($connection, 128); //initialisation vector for encryption
+			$timestampRaw = unpack('N', stream_get_contents($connection, 4));
+			$timestamp = reset($timestampRaw);
+		
+			// fill buffer
+			$this->fillBufferWithRandomData($host, 64);
+			$this->fillBufferWithRandomData($service, 128);
+			$this->fillBufferWithRandomData($message, 512);
+		
+			// build package
+			$crcPacket = pack('nxxxxxxNna64a128a512xx', 3, $timestamp, $returncode, $host, $service, $message);
+			$crc = crc32($crcPacket);
+			$packet = pack('nxxNNna64a128a512xx', 3, $crc, $timestamp, $returncode, $host, $service, $message);
+		
+			// encrypt
+			if ($this->encryptor) {
+				$packet = $this->encryptor->encryptPacket($packet, $iv);
+			}
+		
+			// send it
+			fflush($connection);
+			fwrite($connection, $packet);
+			fclose($connection);
+			return true;
+		} catch (\Exception $exception) {
+    		trigger_error('Error trying to communicate with NSCA: ' . $exception->getMessage(), \E_USER_NOTICE);
+		}
+		return false;
     }
 
     /**
@@ -186,16 +194,20 @@ class SendNsca implements NagiosCodes {
             $buffer .= chr(mt_rand(0, 255));
         }
     }
-
-    /**
-     * Determines if given returncode is a valid code that nagios understands
-     * 
-     * @param int $code
-     * @return bool
-     */
-    protected function isReturncodeValid(int $code): bool {
-        $reflection = new \ReflectionClass('\\' . __NAMESPACE__ . '\\interfaces\\NagiosCodes');
-        return in_array($code, $reflection->getConstants());
+	
+	/**
+	 * Determines if given returncode is a valid code that nagios understands
+	 *
+	 * @param int $code
+	 * @return bool
+	 */
+    protected function isReturncodeValid($code) {
+    	try {
+			$reflection = new \ReflectionClass('\\' . __NAMESPACE__ . '\\interfaces\\NagiosCodes');
+			return in_array($code, $reflection->getConstants());
+		} catch (\ReflectionException $exception) {
+    		return false;
+		}
     }
 
 }

@@ -2,7 +2,6 @@
 
 namespace PhpSendNsca\encryptors;
 
-use PhpSendNsca\encryptors\AbstractEncryptor;
 use PhpSendNsca\interfaces\EncryptorInterface;
 use PhpSendNsca\exceptions\EncryptionException;
 
@@ -19,9 +18,26 @@ class LegacyEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * 
      * @var string 
      */
-    private $encryptionMode = MCRYPT_MODE_CFB;
-
-    /**
+    private $encryptionMode;
+	
+	/**
+	 * LegacyEncryptor constructor.
+	 *
+	 * @author shartmann
+	 * @param $encryptionCipher
+	 * @param $password
+	 * @throws \Exception
+	 */
+	public function __construct($encryptionCipher, $password) {
+		parent::__construct($encryptionCipher, $password);
+		if (defined('MCRYPT_MODE_CFB')) {
+			$this->encryptionMode = \MCRYPT_MODE_CFB;
+		} else {
+			throw new \Exception('Mcrypt extension not loaded');
+		}
+	}
+	
+	/**
      * LegacyEncryptor supports EVERYTHING (except XOR) out of the box, 
      * since it used the same library as nsca does. 
      * @return int[]
@@ -61,7 +77,7 @@ class LegacyEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * @return string
      * @throws EncryptionException
      */
-    protected function translateCipher(int $nscaName): string {
+    protected function translateCipher($nscaName) {
         switch ($nscaName) {
             case self::ENCRYPT_DES:
                 return MCRYPT_DES;
@@ -117,7 +133,7 @@ class LegacyEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * @return string
      * @throws EncryptionException
      */
-    public function encryptPacket(string $packet, string $initialisationVector): string {
+    public function encryptPacket($packet, $initialisationVector) {
         $mcryptCipher = $this->translateCipher($this->encryptionCipher);
         $len = mcrypt_get_iv_size($mcryptCipher, $this->encryptionMode);
         if (false === is_int($len)) {

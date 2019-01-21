@@ -32,7 +32,7 @@ class OpenSslEncryptor extends AbstractEncryptor implements EncryptorInterface {
      * Determines which encryption ciphers are supported
      * @return int[]
      */
-    public function getSupportedEncryptionCiphers() : array {
+    public function getSupportedEncryptionCiphers() {
       return array_keys($this->cipherMap);
     }
     

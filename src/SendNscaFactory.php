@@ -49,7 +49,7 @@ class SendNscaFactory implements Ciphers {
 	 * @return EncryptorInterface
 	 * @throws \Exception
 	 */
-    protected function getEncryptor(int $cipher, string $password): EncryptorInterface {
+    protected function getEncryptor(int $cipher, string $password): ?EncryptorInterface {
 		try {
 			if ($cipher === Ciphers::ENCRYPT_NONE) {
 				return null;

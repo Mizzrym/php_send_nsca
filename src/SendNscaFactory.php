@@ -2,6 +2,7 @@
 
 namespace PhpSendNsca;
 
+use PhpSendNsca\encryptors\NullEncryptor;
 use PhpSendNsca\interfaces\Ciphers;
 use PhpSendNsca\encryptors\XorEncryptor;
 use PhpSendNsca\encryptors\LegacyEncryptor;
@@ -31,16 +32,14 @@ class SendNscaFactory implements Ciphers {
 	 * @return SendNsca
      * @throws \Exception
      */
-    public function getSendNsca(string $connectionString, int $encryptionCipher = null, string $encryptionPassword = null): SendNsca {
-        $password = $encryptionPassword ?? '';
-        $cipher = $encryptionCipher ?? Ciphers::ENCRYPT_NONE;
-        $key = md5($connectionString . ':' . $cipher . ':' . $password);
+    public function getSendNsca(string $connectionString, int $encryptionCipher = Ciphers::ENCRYPT_NONE, string $encryptionPassword = ''): SendNsca {
+        $key = md5($connectionString . ':' . $encryptionCipher . ':' . $encryptionPassword);
         if (false === isset(static::$instances[$key])) {
-            static::$instances[$key] = new SendNsca($connectionString, $this->getEncryptor($cipher, $password));
+            static::$instances[$key] = new SendNsca($connectionString, $this->getEncryptor($encryptionCipher, $encryptionPassword));
         }
         return static::$instances[$key];
     }
-	
+    
 	/**
 	 * Tries to figure out correct encryptor for a given cipher
 	 *
@@ -49,17 +48,17 @@ class SendNscaFactory implements Ciphers {
 	 * @return EncryptorInterface
 	 * @throws \Exception
 	 */
-    protected function getEncryptor(int $cipher, string $password): ?EncryptorInterface {
+    protected function getEncryptor(int $cipher, string $password): EncryptorInterface {
 		try {
 			if ($cipher === Ciphers::ENCRYPT_NONE) {
-				return null;
+				return new NullEncryptor(Ciphers::ENCRYPT_NONE, '');
 			}
 			if ($cipher === Ciphers::ENCRYPT_XOR) {
 				return $this->getXorEncryptor($cipher, $password);
 			}
             $encryptor = $this->getOpenSslEncryptor($cipher, $password);
         } catch (\Exception $exc) {
-            trigger_error('Falling back to legacy encryption, openssl failed: ' . $exc->getMessage(), \E_DEPRECATED);
+            trigger_error('Falling back to legacy encryption, openssl failed: ' . $exc->getMessage(), E_USER_DEPRECATED);
             $encryptor = $this->getLegacyEncryptor($cipher, $password);
         }
         return $encryptor;

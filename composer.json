@@ -17,6 +17,11 @@
       "name": "Uni-tel",
       "homepage": "https://github.com/Uni-tel",
       "role": "Developer"
+    },
+    {
+      "name": "geoffroya",
+      "homepage": "https://github.com/geoffroya",
+      "role": "Developer"
     }
   ],
   "require": {

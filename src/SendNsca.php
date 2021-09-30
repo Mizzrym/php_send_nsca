@@ -64,7 +64,7 @@ class SendNsca implements NagiosCodes {
 	 * @param string $connectionString Examples: 127.0.0.1, localhost:5667, some.server.local:5555, nagios.local
 	 * @param null|EncryptorInterface $encryptor (optional) Class to encrypt the package with
 	 */
-	public function __construct(string $connectionString, EncryptorInterface $encryptor = null) {
+	public function __construct(string $connectionString, EncryptorInterface $encryptor) {
 		if (strpos($connectionString, ':')) {
 			$connect = explode(':', $connectionString);
 			$this->hostname = $connect[0];
@@ -121,8 +121,7 @@ class SendNsca implements NagiosCodes {
 	 * @param string $message Message (optional).
 	 * @return bool
 	 */
-	public function send(string $host, string $service, int $returncode, string $message = null): bool {
-		$message = $message ?? '';
+	public function send(string $host, string $service, int $returncode, string $message = ''): bool {
 		try {
 			if ($this->hostname === null) {
 				throw new Exception('No hostname for NSCA daemon given, don\'t know where to connect to - class not properly initialized');
@@ -166,11 +165,7 @@ class SendNsca implements NagiosCodes {
 			$crcPacket = pack('nxxxxxxNna64a128a512xx', 3, $timestamp, $returncode, $host, $service, $message);
 			$crc = crc32($crcPacket);
 			$packet = pack('nxxNNna64a128a512xx', 3, $crc, $timestamp, $returncode, $host, $service, $message);
-			
-			// encrypt
-			if ($this->encryptor) {
-				$packet = $this->encryptor->encryptPacket($packet, $iv);
-			}
+			$packet = $this->encryptor->encryptPacket($packet, $iv);
 			
 			// send it
 			fflush($connection);

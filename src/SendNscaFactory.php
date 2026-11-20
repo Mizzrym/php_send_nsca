@@ -103,7 +103,7 @@ class SendNscaFactory implements Ciphers {
 	 * @throws \Exception
      */
     public function getLegacyEncryptor(int $cipher, string $password): LegacyEncryptor {
-        if (PHP_VERSION_ID >= 702000) {
+        if (PHP_VERSION_ID >= 70200) {
             throw new \Exception('Mcrypt extension not available');
         }
         if (false === extension_loaded('mcrypt')) {

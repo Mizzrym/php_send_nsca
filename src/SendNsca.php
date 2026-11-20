@@ -86,7 +86,7 @@ class SendNsca implements NagiosCodes {
 	 * @throws \Exception
 	 * @throws \InvalidArgumentException
 	 */
-	public function sendServiceCheck(string $host, string $service, int $returncode, string $message = null): bool {
+	public function sendServiceCheck(string $host, string $service, int $returncode, string $message = ''): bool {
 		if ('' === $service || "\0" === $service) {
 			throw new \InvalidArgumentException('service can not be empty');
 		}
@@ -102,7 +102,7 @@ class SendNsca implements NagiosCodes {
 	 * @return bool
 	 * @throws \Exception
 	 */
-	public function sendHostCheck(string $host, int $returncode, string $message = null): bool {
+	public function sendHostCheck(string $host, int $returncode, string $message = ''): bool {
 		return $this->send($host, '', $returncode, $message);
 	}
 	
